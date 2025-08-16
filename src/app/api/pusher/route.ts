@@ -1,6 +1,7 @@
 import { getAxiosError } from '@/helpers/is-axios-error'
 import axios from 'axios'
 import { NextResponse, type NextRequest } from 'next/server'
+
 export async function POST(request: NextRequest) {
   const body = await request.json()
 
