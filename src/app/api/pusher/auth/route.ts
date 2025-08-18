@@ -2,16 +2,21 @@ import { backendAxiosMethods } from '@/common/adapters/adapters'
 import { PUSHER_AUTH } from '@/common/routes/route.path.service'
 import { getAxiosError } from '@/helpers/is-axios-error'
 import { NextResponse } from 'next/server'
+import { AuthResponse } from './types/auth'
+import { SocketChannel } from './types/type.socket_chanel'
 
 export async function POST(request: Request) {
   const body = await request.json()
-  console.log({
-    message: 'POST',
-    body,
-  })
+  const { channel_name, socket_id } = body as SocketChannel
 
   try {
-    const response = await backendAxiosMethods.POST(PUSHER_AUTH)
+    const response = await backendAxiosMethods.POST<
+      AuthResponse,
+      SocketChannel
+    >(PUSHER_AUTH, {
+      socketId: socket_id,
+      channel: channel_name,
+    })
 
     console.log({
       response,
