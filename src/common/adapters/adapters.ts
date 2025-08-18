@@ -1,12 +1,17 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
-import { API } from '../routes/route.service'
+import { API } from '../routes/route.path.service'
 
-const axiosAdapter: AxiosInstance = axios.create({
+const backendAxios: AxiosInstance = axios.create({
   baseURL: API,
   withCredentials: true,
 })
 
-export const methodsAxios = {
+const proxyAxios: AxiosInstance = axios.create({
+  baseURL: '/',
+  withCredentials: true,
+})
+
+const buildMethods = (axiosAdapter: AxiosInstance) => ({
   async DELETE<T>(url: string, config?: AxiosRequestConfig) {
     const { data } = await axiosAdapter.delete<T>(url, config)
     return data
@@ -27,8 +32,11 @@ export const methodsAxios = {
     return data
   },
 
-  async PUT<T>(url: string, dataPUT?: T, config?: AxiosRequestConfig) {
+  async PUT<T, D>(url: string, dataPUT?: D, config?: AxiosRequestConfig) {
     const { data } = await axiosAdapter.put<T>(url, dataPUT, config)
     return data
   },
-}
+})
+
+export const backendAxiosMethods = buildMethods(backendAxios)
+export const proxyAxiosMethods = buildMethods(proxyAxios)
