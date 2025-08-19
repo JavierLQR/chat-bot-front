@@ -4,8 +4,4 @@ const PATH_SERVICES = {
   PUSHER_AUTH: '/auth/pusher/autentication',
 } as const
 
-console.log({
-  url: PATH_SERVICES.API,
-})
-
 export const { API, PUSHER_AUTH } = PATH_SERVICES

@@ -28,10 +28,6 @@ const buildMethods = (axiosAdapter: AxiosInstance) => ({
   },
 
   async POST<T, D>(url: string, dataPOST?: D, config?: AxiosRequestConfig) {
-    console.log({
-      dataPOST,
-    })
-
     const { data } = await axiosAdapter.post<T>(url, dataPOST, config)
     return data
   },
