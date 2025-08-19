@@ -1,28 +1,29 @@
+import {
+  AuthPusherChannel,
+  AuthPusherChannelResponse,
+} from '@/app/api/pusher/auth/types/type.socket_chanel'
 import { proxyAxiosMethods } from '@/common/adapters/adapters'
 import { API_PUSHER_AUTH } from '@/common/routes/route.api.service'
 import { getAxiosError } from '@/helpers/is-axios-error'
+import { ResponseServer } from '@/helpers/response.server'
 import Pusher from 'pusher-js'
 
 export const useInitialAuthPusher = () => {
-  const pusher = new Pusher(process.env.NEXT_PUBLIC_APP_KEY as string, {
-    cluster: process.env.NEXT_PUBLIC_APP_CLUSTER as string,
+  const pusher = new Pusher(String(process.env.NEXT_PUBLIC_APP_KEY || ''), {
+    cluster: String(process.env.NEXT_PUBLIC_APP_CLUSTER || ''),
 
     authorizer: (channel) => ({
       authorize: async (socketId, callback) => {
         try {
-          // tiparlo
           const response = await proxyAxiosMethods.POST<
-            { auth: string },
-            { socket_id: string; channel_name: string }
+            ResponseServer<AuthPusherChannelResponse>,
+            AuthPusherChannel
           >(API_PUSHER_AUTH, {
             socket_id: socketId,
             channel_name: channel.name,
           })
-
-          console.log({
-            response,
-          })
-          callback(null, { auth: response.auth })
+          const { auth } = response.data
+          callback(null, { auth })
         } catch (error) {
           const axiosError = getAxiosError(error)
           console.error({
